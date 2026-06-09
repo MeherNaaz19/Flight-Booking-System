@@ -1,4 +1,4 @@
-# SkyWay ✈️ — Flight Booking System
+<img width="1906" height="888" alt="Screenshot 2026-04-05 125451" src="https://github.com/user-attachments/assets/777cc9ee-9753-497d-820f-6a9b79422890" /># SkyWay ✈️ — Flight Booking System
 
 A full-featured flight booking web application built as part of an **AI-Assisted Coding course** using GitHub Copilot. Prompts were used to generate and refine code within VS Code.
 
@@ -14,7 +14,29 @@ A full-featured flight booking web application built as part of an **AI-Assisted
 | Admin | admin@skyway.com | admin123 |
 
 ---
+## 📸 Screenshots
+### Login
+![Login](images/2_login.png)
 
+### Home — Flight Search
+![Home](images/1_home.png)
+
+### Seat Selection
+![Seat Selection](images/Seat_selection.png)
+### Payment
+![Payment](images/Payment.png)
+### Download ticket
+![Download ticket](images/download.png)
+### Admin Dashboard
+![Admin Dashboard](images/3_admin_dashboard.png)
+
+### Admin Revenue
+![Admin Revenue](images/4_admin_revenue.png)
+
+### Admin Notifications
+![Admin Notifications](images/5_admin_notifications.png)
+
+---
 ## ✨ Features
 
 **User Features**
@@ -89,3 +111,4 @@ Delhi · Mumbai · Chennai · Bengaluru · Kolkata · Hyderabad · Kochi · Pune
 ---
 
 *Author: Meher Naaz*
+
