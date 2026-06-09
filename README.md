@@ -1,4 +1,4 @@
-<img width="1906" height="888" alt="Screenshot 2026-04-05 125451" src="https://github.com/user-attachments/assets/777cc9ee-9753-497d-820f-6a9b79422890" /># SkyWay ✈️ — Flight Booking System
+# SkyWay ✈️ — Flight Booking System
 
 A full-featured flight booking web application built as part of an **AI-Assisted Coding course** using GitHub Copilot. Prompts were used to generate and refine code within VS Code.
 
