@@ -26,15 +26,15 @@ A full-featured flight booking web application built as part of an **AI-Assisted
 ### Payment
 ![Payment](images/Payment.png)
 ### Download ticket
-![Download ticket](images/download.png)
+![Download ticket](images/Download.png)
 ### Admin Dashboard
-![Admin Dashboard](images/3_admin_dashboard.png)
+![Admin Dashboard](images/Admin_Dashboard.png)
 
 ### Admin Revenue
-![Admin Revenue](images/4_admin_revenue.png)
+![Admin Revenue](images/Admin_Revenue.png)
 
 ### Admin Notifications
-![Admin Notifications](images/5_admin_notifications.png)
+![Admin Notifications](images/Admin_Notifications.png)
 
 ---
 ## ✨ Features
