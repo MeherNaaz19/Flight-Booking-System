@@ -1,0 +1,324 @@
+<!-- Create a responsive HTML structure for a flight booking web app called "SkyWay".
+Include:
+- Sticky navbar with logo, navigation links (Home, Bookings), and auth/profile section
+- Main container for dynamic content (SPA style using a root div)
+- Flight search section with inputs (From, To, Date, Passengers, Trip type)
+- Section for displaying flight results
+- Seat selection layout container
+- Booking section to show user bookings (PNR, status, actions)
+- Forms for login/signup and passenger details
+- Modals for cancel/reschedule actions
+- Admin dashboard layout with sidebar and main content area
+-->
+<!-- ═══════════════════════════════════════════════════════
+     MAIN CONTENT
+═════════════════════════════════════════════════════ -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>SkyWay — Flight Booking</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-logo" onclick="nav('home')">
+    <div class="nav-logo-box">✈</div>
+    Sky<span class="accent">Way</span>
+  </div>
+  <div class="nav-links" id="nav-links">
+    <div class="nav-link" id="nl-home"     onclick="nav('home')">✈ Search</div>
+    <div class="nav-link" id="nl-bookings" onclick="nav('bookings')">📋 My Bookings</div>
+  </div>
+  <div class="nav-right" id="nav-right">
+    <div class="btn-nav-in" onclick="nav('login')">Sign In</div>
+  </div>
+</nav>
+
+<!-- NOTIFICATION BAR (shown when admin broadcasts) -->
+<div id="notif-bar" style="display:none"></div>
+
+<!-- APP ROOT -->
+<div id="app"></div>
+
+<!-- TOAST -->
+<div id="toast-container"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     CANCEL MODAL
+═══════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="m-cancel">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('m-cancel')">✕</button>
+    <div class="modal-title">❌ Cancel Booking</div>
+    <div id="m-cancel-body"></div>
+    <div class="flex gap-2 mt-3">
+      <button class="btn btn-danger btn-full" id="btn-cancel-confirm">Confirm Cancellation</button>
+      <button class="btn btn-sec btn-full" onclick="closeModal('m-cancel')">Keep Booking</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     RESCHEDULE MODAL
+═══════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="m-reschedule">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('m-reschedule')">✕</button>
+    <div class="modal-title">🔄 Reschedule Flight</div>
+    <div id="m-reschedule-body"></div>
+    <div class="mb-2">
+      <label class="form-label">New Travel Date</label>
+      <input type="date" id="r-new-date" class="form-inp">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">New Departure Time (optional)</label>
+      <input type="time" id="r-new-time" class="form-inp">
+    </div>
+    <div class="flex gap-2">
+      <button class="btn btn-warning btn-full" id="btn-reschedule-confirm">Confirm Reschedule</button>
+      <button class="btn btn-sec btn-full" onclick="closeModal('m-reschedule')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PAYMENT MODAL
+═══════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="m-payment">
+  <div class="modal" style="max-width:490px">
+    <button class="modal-close" onclick="closeModal('m-payment')">✕</button>
+    <div class="modal-title">💳 Complete Payment</div>
+
+    <!-- Booking strip -->
+    <div style="background:var(--s2);border-radius:var(--r2);padding:1rem 1.25rem;
+                border:1px solid var(--border);margin-bottom:1.25rem;
+                display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:.7rem;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px">PNR</div>
+        <div style="font-family:'DM Mono',monospace;font-size:1rem;font-weight:600;letter-spacing:2px" id="pay-pnr">—</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:.7rem;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px">Total</div>
+        <div style="font-size:1.3rem;font-weight:800;color:var(--navy)" id="pay-amount">₹0</div>
+      </div>
+    </div>
+
+    <!-- Method tabs -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;margin-bottom:1.25rem">
+      <div class="pay-tab active" onclick="switchPayTab('card',this)">
+        <div style="font-size:1.2rem">💳</div>
+        <div style="font-size:.68rem;font-weight:600;margin-top:3px">Card</div>
+      </div>
+      <div class="pay-tab" onclick="switchPayTab('qr',this)">
+        <div style="font-size:1.2rem">📲</div>
+        <div style="font-size:.68rem;font-weight:600;margin-top:3px">QR / UPI</div>
+      </div>
+      <div class="pay-tab" onclick="switchPayTab('netbanking',this)">
+        <div style="font-size:1.2rem">🏦</div>
+        <div style="font-size:.68rem;font-weight:600;margin-top:3px">Netbanking</div>
+      </div>
+      <div class="pay-tab" onclick="switchPayTab('wallet',this)">
+        <div style="font-size:1.2rem">👛</div>
+        <div style="font-size:.68rem;font-weight:600;margin-top:3px">Wallet</div>
+      </div>
+    </div>
+
+    <!-- CARD panel -->
+    <div id="panel-card">
+      <div style="margin-bottom:.75rem">
+        <label class="form-label">Card Number</label>
+        <input class="form-inp" id="pay-card" placeholder="4242 4242 4242 4242" maxlength="19"
+               oninput="this.value=this.value.replace(/[^0-9]/g,'').replace(/(.{4})/g,'$1 ').trim().slice(0,19)">
+      </div>
+      <div class="form-grid" style="margin-bottom:.75rem">
+        <div>
+          <label class="form-label">Expiry (MM/YY)</label>
+          <input class="form-inp" id="pay-exp" placeholder="12/27" maxlength="5"
+                 oninput="if(this.value.length==2&&!this.value.includes('/'))this.value+='/'">
+        </div>
+        <div>
+          <label class="form-label">CVV</label>
+          <input class="form-inp" id="pay-cvv" placeholder="123" maxlength="3" type="password">
+        </div>
+      </div>
+      <div style="margin-bottom:.85rem">
+        <label class="form-label">Name on Card</label>
+        <input class="form-inp" id="pay-name" placeholder="Arjun Kumar">
+      </div>
+      <div style="display:flex;gap:.5rem;margin-bottom:1rem;align-items:center">
+        <span style="font-size:.7rem;color:var(--t3)">Accepted:</span>
+        <span style="background:#1a1f71;color:#fff;padding:2px 8px;border-radius:4px;font-size:.65rem;font-weight:800">VISA</span>
+        <span style="background:#eb001b;color:#fff;padding:2px 8px;border-radius:4px;font-size:.65rem;font-weight:800">MC</span>
+        <span style="background:#2557d6;color:#fff;padding:2px 8px;border-radius:4px;font-size:.65rem;font-weight:800">AMEX</span>
+        <span style="background:#ff6600;color:#fff;padding:2px 8px;border-radius:4px;font-size:.65rem;font-weight:800">RuPay</span>
+      </div>
+    </div>
+
+    <!-- QR panel -->
+    <div id="panel-qr" style="display:none;text-align:center">
+      <div style="background:white;border-radius:var(--r2);border:2px solid var(--border);
+                  padding:1.5rem;display:inline-block;margin-bottom:1rem">
+        <div id="qr-grid" style="width:160px;height:160px;display:grid;
+                                  grid-template-columns:repeat(10,1fr);gap:2px;margin:0 auto"></div>
+        <div style="margin-top:.75rem;font-size:.76rem;color:var(--t3)">Scan with any UPI app</div>
+        <div style="display:flex;justify-content:center;gap:1rem;margin-top:.6rem">
+          <div style="text-align:center">
+            <div style="width:34px;height:34px;border-radius:8px;background:#5f259f;color:#fff;
+                        display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800">P</div>
+            <div style="font-size:.6rem;color:var(--t3);margin-top:3px">PhonePe</div>
+          </div>
+          <div style="text-align:center">
+            <div style="width:34px;height:34px;border-radius:8px;background:#4285f4;color:#fff;
+                        display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800">G</div>
+            <div style="font-size:.6rem;color:var(--t3);margin-top:3px">GPay</div>
+          </div>
+          <div style="text-align:center">
+            <div style="width:34px;height:34px;border-radius:8px;background:#00baf2;color:#fff;
+                        display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800">T</div>
+            <div style="font-size:.6rem;color:var(--t3);margin-top:3px">Paytm</div>
+          </div>
+          <div style="text-align:center">
+            <div style="width:34px;height:34px;border-radius:8px;background:#ff6600;color:#fff;
+                        display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:800">B</div>
+            <div style="font-size:.6rem;color:var(--t3);margin-top:3px">BHIM</div>
+          </div>
+        </div>
+        <div style="margin-top:.85rem;padding:.5rem .9rem;background:var(--sky-bg);
+                    border-radius:var(--r1);font-size:.78rem;color:var(--sky-d);font-weight:600"
+             id="pay-upi-label">UPI: skyway@okaxis  |  ₹0</div>
+      </div>
+      <div style="margin-bottom:.75rem">
+        <label class="form-label">Or enter UPI ID</label>
+        <input class="form-inp" id="pay-upi" placeholder="yourname@okicici or 9876543210@ybl">
+      </div>
+      <div style="font-size:.78rem;color:var(--t3);margin-bottom:1rem">
+        After scanning and paying, click <strong>I've Paid</strong> below
+      </div>
+    </div>
+
+    <!-- Netbanking panel -->
+    <div id="panel-netbanking" style="display:none">
+      <div style="margin-bottom:1rem">
+        <label class="form-label">Select Your Bank</label>
+        <select class="form-inp form-sel" id="pay-bank">
+          <option value="">— Choose your bank —</option>
+          <option>State Bank of India</option><option>HDFC Bank</option>
+          <option>ICICI Bank</option><option>Axis Bank</option>
+          <option>Kotak Mahindra Bank</option><option>Punjab National Bank</option>
+          <option>Bank of Baroda</option><option>Canara Bank</option>
+          <option>Union Bank of India</option><option>Yes Bank</option>
+          <option>IndusInd Bank</option><option>IDBI Bank</option>
+        </select>
+      </div>
+      <div style="padding:1rem;background:var(--sky-bg);border-radius:var(--r2);
+                  font-size:.82rem;color:var(--sky-d);margin-bottom:1rem">
+        ℹ️ You'll be redirected to your bank's secure login.
+        <strong>(Demo: no real redirect)</strong>
+      </div>
+    </div>
+
+    <!-- Wallet panel -->
+    <div id="panel-wallet" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:1rem">
+        <div class="wallet-opt active" onclick="pickWallet(this)">
+          <div style="font-size:1.3rem">📱</div>
+          <div style="font-size:.76rem;font-weight:700;margin-top:4px">Paytm Wallet</div>
+        </div>
+        <div class="wallet-opt" onclick="pickWallet(this)">
+          <div style="font-size:1.3rem">🔵</div>
+          <div style="font-size:.76rem;font-weight:700;margin-top:4px">Amazon Pay</div>
+        </div>
+        <div class="wallet-opt" onclick="pickWallet(this)">
+          <div style="font-size:1.3rem">🟠</div>
+          <div style="font-size:.76rem;font-weight:700;margin-top:4px">Mobikwik</div>
+        </div>
+        <div class="wallet-opt" onclick="pickWallet(this)">
+          <div style="font-size:1.3rem">🟢</div>
+          <div style="font-size:.76rem;font-weight:700;margin-top:4px">Ola Money</div>
+        </div>
+      </div>
+      <div style="margin-bottom:1rem">
+        <label class="form-label">Registered Mobile Number</label>
+        <input class="form-inp" id="pay-wallet-phone" placeholder="+91 9876543210">
+      </div>
+    </div>
+
+    <!-- Security -->
+    <div style="display:flex;align-items:center;gap:.5rem;padding:.6rem .85rem;
+                background:var(--green-bg);border-radius:var(--r1);
+                font-size:.74rem;color:#065f46;font-weight:500;margin-bottom:1rem">
+      🔒 256-bit SSL encrypted &nbsp;·&nbsp; Demo mode — no real charge
+    </div>
+
+    <button class="btn btn-primary btn-lg btn-full" id="btn-pay" onclick="submitPayment()">Pay ₹0</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ADMIN: NOTIFY MODAL
+═══════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="m-notify">
+  <div class="modal" style="max-width:520px">
+    <button class="modal-close" onclick="closeModal('m-notify')">✕</button>
+    <div class="modal-title">📢 Send Notification</div>
+    <div class="mb-2">
+      <label class="form-label">Notification Type</label>
+      <select class="form-inp form-sel" id="n-type" onchange="onNotifTypeChange()">
+        <option value="general">📣 General Announcement</option>
+        <option value="delay">⏰ Flight Delay</option>
+        <option value="cancellation">❌ Flight Cancellation</option>
+        <option value="gate_change">🚪 Gate Change</option>
+        <option value="boarding">🛫 Boarding Call</option>
+        <option value="weather">🌩 Weather Alert</option>
+      </select>
+    </div>
+    <div class="mb-2" id="n-flight-row">
+      <label class="form-label">Flight Number (optional — leave blank for all passengers)</label>
+      <input class="form-inp" id="n-flight" placeholder="e.g. 6E205">
+    </div>
+    <div class="mb-2" id="n-delay-row" style="display:none">
+      <label class="form-label">Delay Duration (minutes)</label>
+      <input type="number" class="form-inp" id="n-delay" placeholder="e.g. 45" min="0" max="600">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Message</label>
+      <textarea class="form-inp" id="n-message" rows="3"
+                placeholder="Enter notification message for passengers..."></textarea>
+    </div>
+    <div class="flex gap-2">
+      <button class="btn btn-primary btn-full" onclick="sendNotification()">📤 Send Notification</button>
+      <button class="btn btn-sec btn-full" onclick="closeModal('m-notify')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ADMIN: SEAT MAP VIEWER MODAL
+═══════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="m-seatview">
+  <div class="modal" style="max-width:700px">
+    <button class="modal-close" onclick="closeModal('m-seatview')">✕</button>
+    <div class="modal-title" id="sv-title">Seat Map</div>
+    <div style="display:flex;gap:.5rem;margin-bottom:1rem">
+      <button class="btn btn-sec" onclick="loadAdminSeatMap('economy')">Economy</button>
+      <button class="btn btn-sec" onclick="loadAdminSeatMap('business')">Business</button>
+      <button class="btn btn-sec" onclick="loadAdminSeatMap('first')">First</button>
+    </div>
+    <div id="sv-legend" class="seat-legend">
+      <div class="leg-item"><div class="leg-box" style="background:var(--s2);border-color:var(--border)"></div>Available</div>
+      <div class="leg-item"><div class="leg-box" style="background:#f0fdf4;border-color:var(--green)"></div>Exit Row</div>
+      <div class="leg-item"><div class="leg-box" style="background:#fffbeb;border-color:#fbbf24"></div>Window</div>
+      <div class="leg-item"><div class="leg-box" style="background:var(--sky);border-color:var(--sky-d)"></div>Booked</div>
+      <div class="leg-item"><div class="leg-box" style="background:var(--s3);border-color:var(--border)"></div>Occupied</div>
+    </div>
+    <div id="sv-body" style="overflow:auto;max-height:60vh"></div>
+  </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
