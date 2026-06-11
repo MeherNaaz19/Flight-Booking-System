@@ -27,7 +27,8 @@ A full-featured flight booking web application built as part of an **AI-Assisted
 ![Payment](images/Payment.png)
 ### Download ticket
 ![Download ticket](images/Download.png)
-### Check In
+### Check In and Boarding pass
+![Seat Selection](images/Check.png)
 ![Seat Selection](images/CheckIn.png)
 ### Admin Dashboard
 ![Admin Dashboard](images/Admin_Dashboard.png)
