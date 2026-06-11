@@ -78,10 +78,9 @@ SkyWay-Flight-Booking/
 ├── index.html           # Entry point — loads UI shell and mounts the app
 ├── app.js               # Frontend logic (routing, UI, API calls)
 ├── app.py               # Flask backend (REST API endpoints)
-├── db.json              # JSON database (users, bookings, flights)
 └── README.md
 ```
-
+db.json              # JSON database (users, bookings, flights)
 ---
 
 ## ▶️ How to Run
