@@ -19,7 +19,7 @@ A full-featured flight booking web application built as part of an **AI-Assisted
 ![Login Screens](images/Login.png)
 
 ### Home — Flight Search
-![Home](images/1_home.png)
+![Home](images/Home.png)
 
 ### Seat Selection
 ![Seat Selection](images/Seat_selection.png)
