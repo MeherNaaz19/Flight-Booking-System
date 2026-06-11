@@ -10,8 +10,8 @@ A full-featured flight booking web application built as part of an **AI-Assisted
 
 | Role | Email | Password |
 |---|---|---|
-| User | demo@skyway.com | demo123 |
-| Admin | admin@skyway.com | admin123 |
+| User | demo@skyway.com | Demo@123 |
+| Admin | admin@skyway.com | Admin@123 |
 
 ---
 ## 📸 Screenshots
