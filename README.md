@@ -80,7 +80,7 @@ SkyWay-Flight-Booking/
 ├── app.py               # Flask backend (REST API endpoints)
 └── README.md
 ```
-db.json              # JSON database (users, bookings, flights)
+
 ---
 
 ## ▶️ How to Run
