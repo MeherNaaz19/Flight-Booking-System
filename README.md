@@ -73,11 +73,12 @@ A full-featured flight booking web application built as part of an **AI-Assisted
 
 ```
 SkyWay-Flight-Booking/
-├── index.html       # Entry point — loads UI shell and mounts the app
-├── app.js           # Frontend logic (routing, UI, API calls)
-├── style.css        # Full stylesheet (responsive dark/light UI)
-├── app.py           # Flask backend (REST API endpoints)
-├── db.json          # JSON database (users, bookings, flights)
+├── static/
+│   └── style.css        # Full stylesheet (responsive dark/light UI)
+├── index.html           # Entry point — loads UI shell and mounts the app
+├── app.js               # Frontend logic (routing, UI, API calls)
+├── app.py               # Flask backend (REST API endpoints)
+├── db.json              # JSON database (users, bookings, flights)
 └── README.md
 ```
 
