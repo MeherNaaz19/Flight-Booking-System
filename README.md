@@ -22,11 +22,13 @@ A full-featured flight booking web application built as part of an **AI-Assisted
 ![Home](images/Home.png)
 
 ### Seat Selection
-![Seat Selection](images/Seat_selection.png)
+![Seat Selection](images/Seat_Selection.png)
 ### Payment
 ![Payment](images/Payment.png)
 ### Download ticket
 ![Download ticket](images/Download.png)
+### Check In
+![Seat Selection](images/CheckIn.png)
 ### Admin Dashboard
 ![Admin Dashboard](images/Admin_Dashboard.png)
 
