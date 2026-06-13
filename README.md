@@ -1,4 +1,4 @@
-# SkyWay ✈️ — Flight Booking System
+# SkyWay ✈️ : A Flight Booking System
 
 A full-featured flight booking web application built as part of an **AI-Assisted Coding course** using GitHub Copilot. Prompts were used to generate and refine code within VS Code.
 
